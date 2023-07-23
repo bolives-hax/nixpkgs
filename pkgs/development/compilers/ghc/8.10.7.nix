@@ -69,7 +69,6 @@ assert !enableIntegerSimple -> gmp != null;
 assert (stdenv.targetPlatform != stdenv.hostPlatform) -> !enableHaddockProgram;
 
 let
-  libffi_name = if stdenv.isDarwin && stdenv.isAarch64 then "libffi" else "libffi_3_3";
   inherit (stdenv) buildPlatform hostPlatform targetPlatform;
 
   inherit (bootPkgs) ghc;
@@ -185,6 +184,11 @@ let
     (lib.optionalString stdenv.hostPlatform.isMusl "-musl")
     (lib.optionalString enableIntegerSimple "-integer-simple")
   ];
+
+  libffi_name = if stdenv.isDarwin && stdenv.isAarch64 then "libffi" else "libffi_3_3";
+  targetLibffi = if hostPlatform != targetPlatform
+    then targetPackages.${libffi_name}
+    else pkgsHostTarget.${libffi_name};
 
 in
 
@@ -344,8 +348,8 @@ stdenv.mkDerivation (rec {
     "--with-curses-includes=${ncurses.dev}/include" "--with-curses-libraries=${ncurses.out}/lib"
   ] ++ lib.optionals (args.${libffi_name} != null) [
     "--with-system-libffi"
-    "--with-ffi-includes=${targetPackages.${libffi_name}.dev}/include"
-    "--with-ffi-libraries=${targetPackages.${libffi_name}.out}/lib"
+    "--with-ffi-includes=${targetLibffi.dev}/include"
+    "--with-ffi-libraries=${targetLibffi.out}/lib"
   ] ++ lib.optionals (targetPlatform == hostPlatform && !enableIntegerSimple) [
     "--with-gmp-includes=${targetPackages.gmp.dev}/include"
     "--with-gmp-libraries=${targetPackages.gmp.out}/lib"
