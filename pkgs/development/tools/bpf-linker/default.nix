@@ -2,7 +2,7 @@
 , stdenv
 , rustPlatform
 , fetchFromGitHub
-, llvmPackages_15
+, llvmPackages_17
 , zlib
 , ncurses
 , libxml2
