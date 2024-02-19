@@ -16,7 +16,6 @@ rustPlatform.buildRustPackage rec {
     owner = "aya-rs";
     repo = pname;
     rev = "2ae2397701272bface78abc36b0b32d99a2a6998";
-    ref = "main";
     #hash = "sha256-LEZ2to1bzJ;
   };
 
