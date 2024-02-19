@@ -24,7 +24,7 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-tKZTQ5Onl1C/8kudkbQ0zyuFsDKERFqXva8kGkOMQXw=";
 
   buildNoDefaultFeatures = true;
-  buildFeatures = [ "system-llvm" ];
+  #buildFeatures = [ "system-llvm" ];
 
   nativeBuildInputs = [ llvmPackages_17.llvm ];
   buildInputs = [ zlib ncurses libxml2 ];
