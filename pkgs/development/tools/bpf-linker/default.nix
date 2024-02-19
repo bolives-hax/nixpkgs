@@ -20,7 +20,7 @@ rustPlatform.buildRustPackage rec {
     #hash = "sha256-LEZ2to1bzJ;
   };
 
-  cargoHash = "sha256-s8cW7lXtvgemuQueTtAywewnDVJ/WDcz8SBqsC/tO80=";
+  cargoHash = ""; #sha256-s8cW7lXtvgemuQueTtAywewnDVJ/WDcz8SBqsC/tO80=";
 
   buildNoDefaultFeatures = true;
   buildFeatures = [ "system-llvm" ];
