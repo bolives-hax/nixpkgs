@@ -24,7 +24,7 @@ rustPlatform.buildRustPackage rec {
   buildNoDefaultFeatures = true;
   buildFeatures = [ "system-llvm" ];
 
-  nativeBuildInputs = [ llvmPackages_15.llvm ];
+  nativeBuildInputs = [ llvmPackages_17.llvm ];
   buildInputs = [ zlib ncurses libxml2 ];
 
   # fails with: couldn't find crate `core` with expected target triple bpfel-unknown-none
