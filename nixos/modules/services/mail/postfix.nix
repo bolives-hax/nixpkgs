@@ -750,7 +750,7 @@ in
               ${pkgs.postfix}/bin/postalias -o -p /var/lib/postfix/conf/${to}
             '') cfg.aliasFiles)}
             ${concatStringsSep "\n" (mapAttrsToList (to: from: ''
-              ln -sf ${from} /var/lib/postfix/conf/${to}
+              cp ${from} /var/lib/postfix/conf/${to}
               ${pkgs.postfix}/bin/postmap /var/lib/postfix/conf/${to}
             '') cfg.mapFiles)}
 
