@@ -71,4 +71,10 @@ in gcc14Stdenv.mkDerivation {
 
   '';
   dontFixup = true;
+  meta = {
+    # TODO etc
+    # at the moment except very few utilities s390-tools can
+    # only be build for s390 / s390x
+    platforms = [ "s390x-linux" "s390-linux" ];
+  };
 }
