@@ -1,19 +1,24 @@
 { gcc14Stdenv, fetchFromGitHub, systemd, cryptsetup, net-snmp, fuse3, openssl
-, bash, lib}:
+, bash, pkg-config, lib}:
 let
+  stdenv = gcc14Stdenv;
   pname = "s390-tools";
   version = "2.33.1";
   march = with lib; if lib.attrsets.hasAttrByPath
   [ "gcc" "arch" ]
-  gcc14Stdenv.targetPlatform then
-  gcc14Stdenv.targetPlatform.gcc.arch
+  stdenv.targetPlatform then
+  stdenv.targetPlatform.gcc.arch
   else lib.warn "no march specified: selecting z900 (gcc's default)" "z900";
+
+  makeFlags = with lib.strings; (optionalString stdenv.hostPlatform.isS390x "HOST_ARCH=s390x ")
+  + (optionalString (stdenv.buildPlatform != stdenv.hostPlatform )  #cross
+  "BUILD_ARCH=${stdenv.buildPlatform.system} CROSS_COMPILE=s390x-unknown-linux-gnu-");
   in
   lib.warnIf (lib.lists.any
     (m: m == march)
     [ "z900"  "z990"  "arch6" "z9-109" "z9-ec" "arch7" ]
     ) "gcc.arch = \"${march}\" is broken for zipl"
-    gcc14Stdenv.mkDerivation  {
+    stdenv.mkDerivation  {
   inherit pname version;
   src = fetchFromGitHub {
     owner = "ibm-s390-linux";
@@ -24,7 +29,7 @@ let
   nativeBuildInputs = [
     bash
     #gettext
-    #pkg-config
+    pkg-config
     #perl
     #net-snmp.dev
     #ncurses.dev
@@ -60,7 +65,7 @@ let
     --replace-fail "TOOL_DIRS = zipl zdump fdasd dasdfmt dasdview tunedasd \\" "TOOL_DIRS = zipl dasdfmt#\\"
   '';
   buildPhase = ''
-    make V=1 -j $(nproc) HOST_ARCH=s390x BUILD_ARCH=x86_64-linux CROSS_COMPILE=s390x-unknown-linux-gnu- \
+    make V=1 -j $(nproc) ${makeFlags} \
       INSTALLDIR=$out \
       HAVE_OPENSSL=0 \
       HAVE_CURL=0 \
@@ -71,7 +76,7 @@ let
   '';
   installPhase = ''
     mkdir -p $out
-    make install V=1 -j $(nproc) HOST_ARCH=s390x BUILD_ARCH=x86_64-linux CROSS_COMPILE=s390x-unknown-linux-gnu- \
+    make install V=1 -j $(nproc) ${makeFlags} \
       INSTALLDIR=$out \
       HAVE_OPENSSL=0 \
       HAVE_CURL=0 \
@@ -86,6 +91,6 @@ let
     # TODO etc
     # at the moment except very few utilities s390-tools can
     # only be build for s390 / s390x
-    platforms = [ "s390x-linux" "s390-linux" ];
+    platforms = [ "s390x-linux" /*"s390-linux"*/ ];
   };
 }
