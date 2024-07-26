@@ -189,6 +189,10 @@ rec {
     config = "s390x-unknown-linux-gnu";
   };
 
+  z10 = {
+    config = "s390x-unknown-linux-gnu";
+  } // platforms.z10;
+
   arm-embedded = {
     config = "arm-none-eabi";
     libc = "newlib";

@@ -526,6 +526,18 @@ rec {
     };
   };
 
+  z10 = {
+    linux-kernel = {
+      target = "bzImage";
+      name = "z10";
+      autoModules = true;
+      baseConfig = "defconfig";
+    };
+    gcc = {
+      arch = "z10";
+    };
+  };
+
   ##
   ## Other
   ##
