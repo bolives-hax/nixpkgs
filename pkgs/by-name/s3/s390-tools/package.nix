@@ -1,17 +1,28 @@
 { gcc14Stdenv, fetchFromGitHub, systemd, cryptsetup, net-snmp, fuse3, openssl
-, bash }:
+, bash, lib}:
 let
   pname = "s390-tools";
   version = "2.33.1";
-in gcc14Stdenv.mkDerivation {
+  march = with lib; if lib.attrsets.hasAttrByPath
+  [ "gcc" "arch" ]
+  gcc14Stdenv.targetPlatform then
+  gcc14Stdenv.targetPlatform.gcc.arch
+  else lib.warn "no march specified: selecting z900 (gcc's default)" "z900";
+  in
+  lib.warnIf (lib.lists.any
+    (m: m == march)
+    [ "z900"  "z990"  "arch6" "z9-109" "z9-ec" "arch7" ]
+    ) "gcc.arch = \"${march}\" is broken for zipl"
+    gcc14Stdenv.mkDerivation  {
   inherit pname version;
   src = fetchFromGitHub {
-    owner = "ibm-s390-linux/s390-tools";
+    owner = "ibm-s390-linux";
     repo = pname;
-    rev = "${version}";
-    hash = "sha256-GhZPvo8wlXInHwg8rSmpwMMkZVw5SMpnZyKqFUYLbrE=";
+    rev = "v${version}";
+    hash = "sha256-flH2v1z7wpDqGV2R/uS4aBKxdtGtEgO03UjbSA+sBWQ=";
   };
   nativeBuildInputs = [
+    bash
     #gettext
     #pkg-config
     #perl
@@ -42,11 +53,11 @@ in gcc14Stdenv.mkDerivation {
   patchPhase = ''
     patchShebangs --build .
     substituteInPlace \
-    common.mak --replace-fail "override SHELL := /bin/bash" "override SHELL := ${bash}/bin/bash"
+    common.mak --replace-fail "override SHELL := /bin/bash" "override SHELL := bash"
 
     substituteInPlace Makefile \
     --replace-fail "LIB_DIRS = libvtoc libzds libdasd libccw libvmcp libekmfweb \\" "LIB_DIRS = #\\" \
-    --replace-fail "TOOL_DIRS = zipl zdump fdasd dasdfmt dasdview tunedasd \\" "TOOL_DIRS = zipl #\\"
+    --replace-fail "TOOL_DIRS = zipl zdump fdasd dasdfmt dasdview tunedasd \\" "TOOL_DIRS = zipl dasdfmt#\\"
   '';
   buildPhase = ''
     make V=1 -j $(nproc) HOST_ARCH=s390x BUILD_ARCH=x86_64-linux CROSS_COMPILE=s390x-unknown-linux-gnu- \
@@ -70,7 +81,7 @@ in gcc14Stdenv.mkDerivation {
     	HAVE_PFM=0
 
   '';
-  dontFixup = true;
+  #dontFixup = true;
   meta = {
     # TODO etc
     # at the moment except very few utilities s390-tools can
