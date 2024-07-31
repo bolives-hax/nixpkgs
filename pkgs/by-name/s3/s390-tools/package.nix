@@ -1,5 +1,5 @@
 { gcc14Stdenv, fetchFromGitHub, systemd, cryptsetup, net-snmp, fuse3, openssl
-, bash, pkg-config, lib}:
+, bash, pkg-config, json_c, lib}:
 let
   stdenv = gcc14Stdenv;
   pname = "s390-tools";
@@ -51,7 +51,7 @@ let
     #pkgs.cargo
     openssl
     #curl.dev
-    #json_c.dev
+    json_c.dev
     #libxml2.dev
   ];
   hardeningDisable = [ "all" ];
@@ -62,7 +62,7 @@ let
 
     substituteInPlace Makefile \
     --replace-fail "LIB_DIRS = libvtoc libzds libdasd libccw libvmcp libekmfweb \\" "LIB_DIRS = #\\" \
-    --replace-fail "TOOL_DIRS = zipl zdump fdasd dasdfmt dasdview tunedasd \\" "TOOL_DIRS = zipl dasdfmt#\\"
+    --replace-fail "TOOL_DIRS = zipl zdump fdasd dasdfmt dasdview tunedasd \\" "TOOL_DIRS = zipl dasdfmt zdev#\\"
   '';
   buildPhase = ''
     make V=1 -j $(nproc) ${makeFlags} \
