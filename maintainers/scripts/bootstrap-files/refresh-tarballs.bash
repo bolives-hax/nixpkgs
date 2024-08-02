@@ -96,6 +96,7 @@ CROSS_TARGETS=(
     powerpc64le-unknown-linux-gnu
     riscv64-unknown-linux-gnu
     x86_64-unknown-freebsd
+    s390x-unknown-linux-gnu
 )
 
 is_cross() {
