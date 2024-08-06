@@ -30,6 +30,7 @@
       #  ${pkgs.mk-s390x-cdboot}  -i ${config.system.boot.loader.kernelFile} \
       #    -r ${config.system.boot.loader.initrdFile}  -p ${paramFile} -o kernel_bundle.img
       ''
+        ${pkgs.mk-s390x-cdboot}
         xorrisofs -r -l -no-emul-boot -eltorito-boot kernel_bundle.img -o cdrom.iso
       '';
       installPhase = ''
