@@ -526,6 +526,18 @@ rec {
     };
   };
 
+  z10 = {
+    linux-kernel = {
+      name = "s390x";
+      baseConfig = "defconfig";
+      target = "bzImage";
+      autoModules = true;
+      gcc = {
+        arch = "z10";
+      };
+    };
+  };
+
   ##
   ## Other
   ##
