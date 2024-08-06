@@ -25,9 +25,11 @@
         xorriso
         #mk-s390x-cdboot
       ];
-      buildPhase = ''
-        ${pkgs.mk-s390x-cdboot}  -i ${config.system.boot.loader.kernelFile} \
-          -r ${config.system.boot.loader.initrdFile}  -p ${paramFile} -o kernel_bundle.img
+      buildPhase =
+      #''
+      #  ${pkgs.mk-s390x-cdboot}  -i ${config.system.boot.loader.kernelFile} \
+      #    -r ${config.system.boot.loader.initrdFile}  -p ${paramFile} -o kernel_bundle.img
+      ''
         xorrisofs -r -l -no-emul-boot -eltorito-boot kernel_bundle.img -o cdrom.iso
       '';
       installPhase = ''
