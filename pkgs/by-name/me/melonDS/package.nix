@@ -2,6 +2,7 @@
   lib,
   SDL2,
   cmake,
+  enet,
   extra-cmake-modules,
   fetchFromGitHub,
   libGL,
@@ -26,13 +27,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "melonDS";
-  version = "0.9.5-unstable-2024-07-21";
+  version = "0.9.5-unstable-2024-08-19";
 
   src = fetchFromGitHub {
     owner = "melonDS-emu";
     repo = "melonDS";
-    rev = "837a58208711722e1762098c2a0244c2d8409864";
-    hash = "sha256-SSW/+wLnZKlldVIBXMqDvXuwyK1LxcfON6ZTKLxY68U=";
+    rev = "824eb370e4bbf8f4b90279b0488b65bff2bda683";
+    hash = "sha256-caVkdth4/7+WyjNcayZ1ww5kvvMmEycZP5nEZ9p3rO4=";
   };
 
   nativeBuildInputs = [
@@ -44,6 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs =
     [
       SDL2
+      enet
       extra-cmake-modules
       libarchive
       libslirp
@@ -73,13 +75,6 @@ stdenv.mkDerivation (finalAttrs: {
     ++ lib.optionals stdenv.isDarwin [
       "--prefix DYLD_LIBRARY_PATH : ${lib.makeLibraryPath [ libpcap ]}"
     ];
-
-  installPhase = lib.optionalString stdenv.isDarwin ''
-    runHook preInstall
-    mkdir -p $out/Applications
-    cp -r melonDS.app $out/Applications/
-    runHook postInstall
-  '';
 
   passthru = {
     updateScript = unstableGitUpdater { };

@@ -21,7 +21,7 @@ let
       description = "Full-featured e-mail client";
       homepage = "https://thunderbird.net/";
       mainProgram = "thunderbird";
-      maintainers = with maintainers; [ eelco lovesegfault pierron vcunat ];
+      maintainers = with maintainers; [ lovesegfault pierron vcunat ];
       platforms = platforms.unix;
       badPlatforms = platforms.darwin;
       broken = stdenv.buildPlatform.is32bit; # since Firefox 60, build on 32-bit platforms fails with "out of memory".
@@ -60,8 +60,8 @@ in rec {
   };
 
   thunderbird-128 = common {
-    version = "128.0.1esr";
-    sha512 = "db7507fcfd5bc2dd4ad52eaeb87c575d87cb438765861c468ab17678ca6ab32b28b60d0431ec7f558ea0db90fa59e35a8a4aeba046ebd0b00cfb6d9e8019318e";
+    version = "128.1.1esr";
+    sha512 = "91e17d63383b05a7565838c61eda3b642f1bb3b4c43ae78a8810dd6d9ba2e5f10939be17598dd5e87bdf28d6f70ff9e154e54218aaf161bd89a5a6d30b504427";
 
     updateScript = callPackage ./update.nix {
       attrPath = "thunderbirdPackages.thunderbird-128";

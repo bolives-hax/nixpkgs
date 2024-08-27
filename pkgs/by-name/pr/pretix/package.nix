@@ -13,6 +13,16 @@ let
   python = python3.override {
     self = python;
     packageOverrides = self: super: {
+      bleach = super.bleach.overridePythonAttrs (oldAttrs: rec {
+        version = "5.0.1";
+
+        src = fetchPypi {
+          pname = "bleach";
+          inherit version;
+          hash = "sha256-DQMlXEfrm9Lyaqm7fyEHcy5+j+GVyi9kcJ/POwpKCFw=";
+        };
+      });
+
       django = super.django_4;
 
       django-oauth-toolkit = super.django-oauth-toolkit.overridePythonAttrs (oldAttrs: {
@@ -41,13 +51,13 @@ let
   };
 
   pname = "pretix";
-  version = "2024.7.0";
+  version = "2024.7.1";
 
   src = fetchFromGitHub {
     owner = "pretix";
     repo = "pretix";
     rev = "refs/tags/v${version}";
-    hash = "sha256-08ykuFPcG3WvinJd9zadirXFqsMt9GbdOGU2CGbW7ls=";
+    hash = "sha256-lOcV3+CNGyKR0QiQXr/hP/9rhWauEvnSLOvxmQa/DSg=";
   };
 
   npmDeps = buildNpmPackage {
@@ -84,8 +94,8 @@ python.pkgs.buildPythonApplication rec {
   ];
 
   pythonRelaxDeps = [
-    "bleach"
     "importlib-metadata"
+    "kombu"
     "pillow"
     "protobuf"
     "python-bidi"
