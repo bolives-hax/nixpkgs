@@ -50,6 +50,7 @@ stdenv.mkDerivation (finalAttrs: {
       "tcp_bind6_error_addrinuse" "tcp_bind_error_addrinuse_listen"
       # https://github.com/libuv/libuv/pull/4075#issuecomment-1935572237
       "thread_priority"
+      "signal_multiple_loops" # fails on IBM cloud buildsrv (TODO maybe stdenv.isS390x unless its buildsrv dependent)
     ] ++ lib.optionals stdenv.isDarwin [
         # Sometimes: timeout (no output), failed uv_listen. Someone
         # should report these failures to libuv team. There tests should

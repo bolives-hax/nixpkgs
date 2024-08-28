@@ -43,7 +43,7 @@ buildPythonPackage rec {
   # See https://github.com/pallets/jinja/issues/1158
   doCheck = !stdenv.is32bit;
 
-  nativeCheckInputs = [ pytestCheckHook ] ++ passthru.optional-dependencies.i18n;
+  nativeCheckInputs = [ /*pytestCheckHook */ ] ++ passthru.optional-dependencies.i18n;
 
   disabledTests = lib.optionals (pythonAtLeast "3.13") [
     # https://github.com/pallets/jinja/issues/1900

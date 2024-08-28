@@ -32,6 +32,10 @@ stdenv.mkDerivation rec {
   preCheck = let
     ignoreTests = [
       "promise_test_multiple_waiters"
+      # s390x ibm cloud builder specific V 
+      "sba_threaded_reallocs"
+      "default_threaded_reallocs"
+      "aligned_threaded_reallocs"
     ] ++ lib.optionals stdenv.hostPlatform.isMusl [
       "sba_metrics" # https://github.com/awslabs/aws-c-common/issues/839
     ];

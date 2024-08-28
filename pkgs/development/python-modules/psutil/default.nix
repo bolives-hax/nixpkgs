@@ -63,6 +63,7 @@ buildPythonPackage rec {
     "sensors_temperatures"
     "user"
     "test_disk_partitions" # problematic on Hydra's Linux builders, apparently
+    "cpu_count_cores" # fails on IBM cloud s390x  (returns 1 core instead of 2)
   ];
 
   pythonImportsCheck = [ "psutil" ];
