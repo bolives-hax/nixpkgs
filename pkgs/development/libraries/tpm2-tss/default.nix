@@ -67,7 +67,8 @@ stdenv.mkDerivation rec {
 
   configureFlags = lib.optionals doInstallCheck [
     "--enable-unit"
-    "--enable-integration"
+    # V doesn't work on s390x
+    # "--enable-integration"
   ];
 
   postInstall = ''
