@@ -12,7 +12,7 @@ its somewhat peculiar bootstrapping mechanism.
 This tool was originally written by sternenseemann and is licensed under the MIT
 license (as is nixpkgs) as well as the BSD 3 Clause license since it incorporates
 some code from GHC. It is primarily intended for use in nixpkgs, so it should be
-considered unstabile: No guarantees about the stability of its command line
+considered unstable: No guarantees about the stability of its command line
 interface are made at this time.
 
 > -- SPDX-License-Identifier: MIT AND BSD-3-Clause

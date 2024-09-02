@@ -1,4 +1,8 @@
-{ stdenv, ghc, lib }:
+{
+  stdenv,
+  ghc,
+  lib,
+}:
 
 stdenv.mkDerivation {
   pname = "ghc-settings-edit";
@@ -19,7 +23,10 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    license = [ lib.licenses.mit lib.licenses.bsd3 ];
+    license = [
+      lib.licenses.mit
+      lib.licenses.bsd3
+    ];
     platform = lib.platforms.all;
     description = "Tool for editing GHC's settings file";
   };
