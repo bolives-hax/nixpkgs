@@ -55,6 +55,11 @@ EOF
 
     read -n 1 reply
 
+    # TODO it appears as in case this gets invoked it dosen't select
+    # the proper default console in qemua thus we never get
+    # the shell, if we placed /bin/sh or sth here instead of this big block
+    # this seems to work in qemu but as this relesae shouldn't
+    # fail ... no need
     if [ -n "$allowShell" -a "$reply" = f ]; then
         exec setsid @shell@ -c "exec @shell@ < /dev/$console >/dev/$console 2>/dev/$console"
     elif [ -n "$allowShell" -a "$reply" = i ]; then

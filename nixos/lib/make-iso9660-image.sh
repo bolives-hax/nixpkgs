@@ -37,9 +37,9 @@ if test -n "$bootable"; then
     done
 
     isoBootFlags="-eltorito-boot ${bootImage}
-                  -eltorito-catalog .boot.cat
-                  -no-emul-boot -boot-load-size 4 -boot-info-table
-                  --sort-weight 1 /isolinux" # Make sure isolinux is near the beginning of the ISO
+                   -eltorito-catalog .boot.cat
+                   -no-emul-boot " # -boot-load-size 4 " #-boot-info-table"
+                  # --sort-weight 1 /isolinux" # Make sure isolinux is near the beginning of the ISO
 fi
 
 if test -n "$usbBootable"; then

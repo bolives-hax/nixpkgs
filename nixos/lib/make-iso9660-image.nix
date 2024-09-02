@@ -68,7 +68,7 @@ stdenv.mkDerivation {
   __structuredAttrs = true;
 
   buildCommandPath = ./make-iso9660-image.sh;
-  nativeBuildInputs = [ xorriso syslinux zstd libossp_uuid ]
+  nativeBuildInputs = [ xorriso syslinux zstd libossp_uuid squashfsTools ]
     ++ lib.optionals needSquashfs makeSquashfsDrv.nativeBuildInputs;
 
   inherit isoName bootable bootImage compressImage volumeID efiBootImage efiBootable isohybridMbrImage usbBootable;
