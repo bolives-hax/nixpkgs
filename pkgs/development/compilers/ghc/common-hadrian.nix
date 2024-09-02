@@ -342,6 +342,10 @@ let
     then targetPackages.libffi
     else pkgsHostTarget.libffi;
 
+  targetElfutils = if hostPlatform != targetPlatform
+    then targetPackages.elfutils
+    else pkgsHostTarget.elfutils;
+
   # Our Cabal compiler name
   haskellCompilerName = "ghc-${version}";
 
@@ -486,8 +490,8 @@ stdenv.mkDerivation ({
     "--disable-large-address-space"
   ] ++ lib.optionals enableDwarf [
     "--enable-dwarf-unwind"
-    "--with-libdw-includes=${lib.getDev targetPackages.elfutils}/include"
-    "--with-libdw-libraries=${lib.getLib targetPackages.elfutils}/lib"
+    "--with-libdw-includes=${lib.getDev targetElfutils}/include"
+    "--with-libdw-libraries=${lib.getLib targetElfutils}/lib"
   ] ++ lib.optionals targetPlatform.isDarwin [
     # Darwin uses llvm-ar. GHC will try to use `-L` with `ar` when it is `llvm-ar`
     # but it doesn’t currently work because Cabal never uses `-L` on Darwin. See:
