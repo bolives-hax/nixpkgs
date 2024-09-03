@@ -11,7 +11,6 @@
   };
 
   config = {
-
     #fileSystems = config.lib.isoFileSystems;
     boot.initrd.availableKernelModules = [ "squashfs" "iso9660" "uas" "overlay" 
 "virtio-pci" "virtio_blk" "virtio_scsi" "sr_mod" ];
@@ -69,38 +68,53 @@
     };
 
     boot.kernelParams =
-      [ "root=LABEL=nixos"
+      [ 
+	"root=LABEL=nixos"
         "boot.shell_on_fail"
+	# TODO the emergency shell seems
+	# to be useless in qemu as
+	# it doesn't select the right serialdev/tty
+	# and thus the shell won't show up after
+	# the (press X to choice ...) dialogue
       ];
     system.build.isoImage = let 
 	bigimg = pkgs.stdenvNoCC.mkDerivation {
       		pname = "bigimg-boot";
       		# TODO this is just a single file
       		dontUnpack = true;
-      		version = "0.1.3";
+      		version = "0.1.4";
       		dontFixup = true;
       		nativeBuildInputs = with pkgs; [
-      		  #xorriso
-      		  mk-s390-cdboot getopt
+      		  # TODO make sure getopt is a dep of s390 tools
+		  # and that share/netboot scripts are either another pkg or
+		  # added to /bin
+      		  getopt
+      		  s390-tools
       		];
+		# TODO i don't think the copytoram gets interpreted here ...
+		# does it? And is it a wise default selection? I figured
+		# it would make things better when using emulation > kvm
       		buildPhase = let
       			paramFile = pkgs.writeText "params.txt" ''
       			  init=${config.system.build.toplevel}/init ${toString config.boot.kernelParams} copytoram
       			'';
-		in ''
-			mk-s390-cdboot   ${config.boot.kernelPackages.kernel}/${config.system.boot.loader.kernelFile} \
-      		    -r ${config.system.build.initialRamdisk}/${config.system.boot.loader.initrdFile}  -p ${paramFile} kernel_bundle.img
+		in "${s390-tools}/usr/share/s390-tools/netboot/mk-s390image \
+			${config.boot.kernelPackages.kernel}/${config.system.boot.loader.kernelFile} \
+      		    	-r ${config.system.build.initialRamdisk}/${config.system.boot.loader.initrdFile} \
+			-p ${paramFile} kernel_bundle.img
 		'';
 		installPhase = "mv kernel_bundle.img $out";
 	};
 	in (pkgs.callPackage ../../../lib/make-iso9660-image.nix ({
 	isoName = "nixos-s390x.iso";
+	# V TODO set this like its being done in the non s390x cdimage thingy
 	volumeID = "nixos";
 	compressImage = false;
 	squashfsCompression = "zstd -Xcompression-level 6";
 
 	bootable = true;
-	# usbBootable = true; ?!
+	# usbBootable = true; ?! # why does this cause issues
+	# do we want to hardcode this and is this a smart name?
 	bootImage = "/bigimg";
 	contents = [
         	{
@@ -117,37 +131,13 @@
     })).overrideAttrs (final: prev: {
 		nativeBuildInputs = with pkgs; [
 			xorriso
-			#syslinux
+			#syslinux # we don't have syslinux here
+			# but should fix this in a lasting sense instead of just
+			# overriding here
 			zstd
 			libossp_uuid 
 		];
 	});
 
-    s390xIso = let
-      paramFile = pkgs.writeText "params.txt" ''
-        init=${config.system.build.toplevel}/init ${toString config.boot.kernelParams} copytoram
-      '';
-    in pkgs.stdenvNoCC.mkDerivation {
-      pname = "s390x-installer-iso";
-      # TODO this is just a single file
-      dontUnpack = true;
-      version = "0.1.0";
-      nativeBuildInputs = with pkgs; [
-        xorriso
-        mk-s390x-cdboot
-      ];
-      buildPhase =
-      #''
-      #  ${pkgs.mk-s390x-cdboot}  -i ${config.system.boot.loader.kernelFile} \
-      #    -r ${config.system.boot.loader.initrdFile}  -p ${paramFile} -o kernel_bundle.img
-      ''
-       mk-s390x-cdboot
-        xorrisofs -r -l -no-emul-boot -eltorito-boot kernel_bundle.img -o cdrom.iso
-      '';
-      installPhase = ''
-        mkdir $out
-        mv cdrom.iso $out
-      '';
-    };
   };
 }
