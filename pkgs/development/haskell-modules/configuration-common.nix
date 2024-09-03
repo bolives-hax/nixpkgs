@@ -27,14 +27,14 @@ self: super: {
     Cabal-syntax = self.Cabal-syntax_3_10_3_0;
   } // lib.optionalAttrs (lib.versionOlder self.ghc.version "9.2.5") {
     # Use process core package when possible
-    process = self.process_1_6_20_0;
+    process = self.process_1_6_22_0;
   }));
 
   Cabal_3_12_1_0 = doDistribute (super.Cabal_3_12_1_0.override ({
     Cabal-syntax = self.Cabal-syntax_3_12_1_0;
   } // lib.optionalAttrs (lib.versionOlder self.ghc.version "9.2.5") {
     # Use process core package when possible
-    process = self.process_1_6_20_0;
+    process = self.process_1_6_22_0;
   }));
 
   # hackage-security == 0.6.2.6 has a wider support range in theory, but it only
@@ -3078,7 +3078,7 @@ self: super: {
     # 2024-08-09: The stackage versions of safe-coloured-text* are old and broken
     safe-coloured-text = unmarkBroken self.safe-coloured-text_0_3_0_2;
     safe-coloured-text-gen = unmarkBroken self.safe-coloured-text-gen_0_0_0_3;
-    safe-coloured-text-layout = unmarkBroken self.safe-coloured-text-layout_0_2_0_0;
+    safe-coloured-text-layout = unmarkBroken self.safe-coloured-text-layout_0_2_0_1;
     safe-coloured-text-layout-gen = unmarkBroken self.safe-coloured-text-layout-gen_0_0_0_1;
     safe-coloured-text-terminfo = unmarkBroken self.safe-coloured-text-terminfo_0_3_0_0;
   })));
