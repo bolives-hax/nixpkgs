@@ -457,13 +457,13 @@ stdenv.mkDerivation (rec {
   postInstall = ''
     # Make the installed GHC use the host platform's tools.
     ghc-settings-edit "$out/lib/${targetPrefix}${passthru.haskellCompilerName}/settings" \
-      "C compiler command" "${installCC}/bin/${installCC.targetPrefix}cc" \
-      "Haskell CPP command" "${installCC}/bin/${installCC.targetPrefix}cc" \
-      "C++ compiler command" "${installCC}/bin/${installCC.targetPrefix}c++" \
-      "ld command" "${installCC.bintools}/bin/${installCC.bintools.targetPrefix}ld${lib.optionalString useLdGold ".gold"}" \
-      "Merge objects command" "${installCC.bintools}/bin/${installCC.bintools.targetPrefix}ld${lib.optionalString useLdGold ".gold"}" \
-      "ar command" "${installCC.bintools}/bin/${installCC.bintools.targetPrefix}ar" \
-      "ranlib command" "${installCC.bintools}/bin/${installCC.bintools.targetPrefix}ranlib"
+      "C compiler command" "${toolPath "cc" installCC}" \
+      "Haskell CPP command" "${toolPath "cc" installCC}" \
+      "C++ compiler command" "${toolPath "c++" installCC}" \
+      "ld command" "${toolPath "ld${lib.optionalString useLdGold ".gold"}" installCC}" \
+      "Merge objects command" "${toolPath "ld${lib.optionalString useLdGold ".gold"}" installCC}" \
+      "ar command" "${toolPath "ar" installCC}" \
+      "ranlib command" "${toolPath "ranlib" installCC}"
     # TODO: otool/install_name_tool
 
     # Install the bash completion file.
