@@ -10,19 +10,7 @@ let
 
   defaultUser = "slurm";
 
-  configFile = pkgs.writeTextDir "slurm.conf"
-    ''
-      ClusterName=${cfg.clusterName}
-      StateSaveLocation=${cfg.stateSaveLocation}
-      SlurmUser=${cfg.user}
-      ${optionalString (cfg.controlMachine != null) "controlMachine=${cfg.controlMachine}"}
-      ${optionalString (cfg.controlAddr != null) "controlAddr=${cfg.controlAddr}"}
-      ${toString (map (x: "NodeName=${x}\n") cfg.nodeName)}
-      ${toString (map (x: "PartitionName=${x}\n") cfg.partitionName)}
-      PlugStackConfig=${plugStackConfig}/plugstack.conf
-      ProctrackType=${cfg.procTrackType}
-      ${cfg.extraConfig}
-    '';
+  configFile = pkgs.writeTextDir "slurm.conf" cfg.rawConfig;
 
   plugStackConfig = pkgs.writeTextDir "plugstack.conf"
     ''
@@ -236,6 +224,10 @@ in
         '';
       };
 
+      rawConfig = mkOption {
+          type = types.path;
+          default = "";
+      };
       extraConfig = mkOption {
         default = "";
         type = types.lines;
