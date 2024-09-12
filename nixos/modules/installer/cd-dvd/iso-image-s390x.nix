@@ -98,10 +98,10 @@
       			paramFile = pkgs.writeText "params.txt" ''
       			  init=${config.system.build.toplevel}/init ${toString config.boot.kernelParams} copytoram
       			'';
-		in "${pkgs.s390-tools}/usr/share/s390-tools/netboot/mk-s390image \
+		in ''${pkgs.s390-tools}/usr/share/s390-tools/netboot/mk-s390image \
 			${config.boot.kernelPackages.kernel}/${config.system.boot.loader.kernelFile} \
       		    	-r ${config.system.build.initialRamdisk}/${config.system.boot.loader.initrdFile} \
-			-p ${paramFile} kernel_bundle.img";
+			-p ${paramFile} kernel_bundle.img'';
 		installPhase = "mv kernel_bundle.img $out";
 	};
 	in (pkgs.callPackage ../../../lib/make-iso9660-image.nix ({
