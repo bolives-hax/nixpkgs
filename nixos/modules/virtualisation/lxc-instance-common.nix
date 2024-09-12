@@ -8,9 +8,9 @@
   imports = [
     ./lxc-image-metadata.nix
 
-    ../installer/cd-dvd/channel.nix
-    ../profiles/clone-config.nix
-    ../profiles/minimal.nix
+    #../installer/cd-dvd/channel.nix
+    #../profiles/clone-config.nix
+    #../profiles/minimal.nix
   ];
 
   # Allow the user to login as root without password.
