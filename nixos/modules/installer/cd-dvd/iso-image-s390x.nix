@@ -30,8 +30,7 @@
 */
     stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
   });
-system.requiredKernelConfig = lib.mkForce [];
-/*
+# system.requiredKernelConfig = lib.mkForce [];
     boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxPackages_latest.kernel.override {
 	structuredExtraConfig = with lib.kernel; {
 		EARLY_PRINTK = yes;
@@ -50,7 +49,6 @@ system.requiredKernelConfig = lib.mkForce [];
 		#SCLP_OFB = yes;
 	};
     });
-*/
 
     fileSystems = {
     "/iso" = 
