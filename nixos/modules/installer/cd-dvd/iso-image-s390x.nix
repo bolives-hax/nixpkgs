@@ -24,7 +24,7 @@
     };
     configfile = "${(pkgs.fetchurl {
 	url = "https://git.alpinelinux.org/aports/plain/main/linux-lts/lts.s390x.config";
-	hash = "sha256:1hx3i93r67jxcd367cab6i8511zfcjfs1bh9nn92dr48nm6cg1j2";
+	hash = "sha256:sha256-U2iX8ZjNIE3c0s9VfKPxFVQQHGMus/cSg/MaWCXEYDQ=";
     })}";
     stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
   });
