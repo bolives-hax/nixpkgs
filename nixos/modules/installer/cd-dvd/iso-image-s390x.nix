@@ -17,7 +17,7 @@
     boot.initrd.kernelModules = [ "loop" "overlay" ];
     boot.kernel.features = { debug = true; };
  boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxManualConfig rec {
-    version = "6.6.21";
+    version = "6.6.52";
     src = fetchTarball {
       url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.52.tar.xz";
       sha256 = "sha256:0h92b741c602ff7i6hyndpjn8n1k06qa2pqprncd2ax9zn0k2d86";
