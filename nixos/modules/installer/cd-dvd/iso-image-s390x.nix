@@ -16,6 +16,7 @@
 "virtio-pci" "virtio_blk" "virtio_scsi" "sr_mod" ];
     boot.initrd.kernelModules = [ "loop" "overlay" ];
     boot.kernel.features = { debug = true; };
+/*
  boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxManualConfig rec {
     version = "6.6.52";
     src = fetchTarball {
@@ -26,6 +27,7 @@
 	url = "https://git.alpinelinux.org/aports/plain/main/linux-lts/lts.s390x.config";
 	hash = "sha256-U2iX8ZjNIE3c0s9VfKPxFVQQHGMus/cSg/MaWCXEYDQ=";
     })}";
+*/
     stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
   });
 system.requiredKernelConfig = lib.mkForce [];
