@@ -16,6 +16,20 @@
 "virtio-pci" "virtio_blk" "virtio_scsi" "sr_mod" ];
     boot.initrd.kernelModules = [ "loop" "overlay" ];
     boot.kernel.features = { debug = true; };
+ boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxManualConfig rec {
+    version = "6.6.21";
+    src = fetchTarball {
+      url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.52.tar.xz";
+      sha256 = "sha256:0h92b741c602ff7i6hyndpjn8n1k06qa2pqprncd2ax9zn0k2d86";
+    };
+    configfile = "${(pkgs.fetchurl {
+	url = "https://git.alpinelinux.org/aports/plain/main/linux-lts/lts.s390x.config";
+	hash = "sha256:1hx3i93r67jxcd367cab6i8511zfcjfs1bh9nn92dr48nm6cg1j2";
+    })}";
+    stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
+  });
+system.requiredKernelConfig = lib.mkForce [];
+/*
     boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxPackages_latest.kernel.override {
 	structuredExtraConfig = with lib.kernel; {
 		EARLY_PRINTK = yes;
@@ -23,8 +37,18 @@
                 DEBUG_INFO = yes;
                 EXPERT = yes;
                 DEBUG_KERNEL = yes;
+		TASK_DELAY_ACCT = yes;
+		IKHEADERS = yes; # bcc needs this for memleak testing 
+
+		# test if that fixes kernel
+		#SCLP_TTY = module;
+		#SCLP_CONSOLE = module;
+		#SCLP_VT220_TTY = module;
+		#SCLP_VT220_CONSOLE = module;
+		#SCLP_OFB = yes;
 	};
     });
+*/
 
     fileSystems = {
     "/iso" = 
@@ -95,8 +119,11 @@
 		# does it? And is it a wise default selection? I figured
 		# it would make things better when using emulation > kvm
       		buildPhase = let
-      			paramFile = pkgs.writeText "params.txt" ''
+      			/*paramFile = pkgs.writeText "params.txt" ''
       			  init=${config.system.build.toplevel}/init ${toString config.boot.kernelParams} copytoram
+      			'';*/
+      			paramFile = pkgs.writeText "params.txt" ''
+      			  init=${config.system.build.toplevel}/init ${toString config.boot.kernelParams}
       			'';
 		in ''${pkgs.s390-tools}/usr/share/s390-tools/netboot/mk-s390image \
 			${config.boot.kernelPackages.kernel}/${config.system.boot.loader.kernelFile} \

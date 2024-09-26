@@ -6,10 +6,10 @@ callPackage ./default.nix {
   version = "2.1.1713773202";
 
   src = fetchFromGitHub {
-    owner = "LuaJIT";
+    owner = "linux-on-ibm-z";
     repo = "LuaJIT";
-    rev = "5790d253972c9d78a0c2aece527eda5b134bbbf7";
-    hash = "sha256-WG8AWDI182/9O7NrZlQ6ZH/esyYE2pWXMuSzWUuntSA=";
+    rev = "9eaff286df941f645b31360093e181b967993695";
+    hash = "sha256-4irOZ2m3k6Nz5rvvqN4DfAIQWCvIySSSC1MmzvA6GS8=";
   };
 
   inherit self passthruFun;
