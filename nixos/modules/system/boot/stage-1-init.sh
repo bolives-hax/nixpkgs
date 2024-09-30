@@ -1,7 +1,7 @@
 #! @shell@
 
 targetRoot=/mnt-root
-console=tty1
+console=ttysclp0
 verbose="@verbose@"
 
 info() {
@@ -61,6 +61,7 @@ EOF
     # this seems to work in qemu but as this relesae shouldn't
     # fail ... no need
     if [ -n "$allowShell" -a "$reply" = f ]; then
+	    #/bin/sh #bash
         exec setsid @shell@ -c "exec @shell@ < /dev/$console >/dev/$console 2>/dev/$console"
     elif [ -n "$allowShell" -a "$reply" = i ]; then
         echo "Starting interactive shell..."
@@ -262,12 +263,16 @@ done
 # This is needed by the spl/zfs modules.
 @setHostId@
 
+echo "shell before kernel modules are loaded:"
+#/bin/sh
 # Load the required kernel modules.
 echo @extraUtils@/bin/modprobe > /proc/sys/kernel/modprobe
 for i in @kernelModules@; do
     info "loading module $(basename $i)..."
     modprobe $i
 done
+echo "shell right after kernel modules were loaded"
+#/bin/sh
 
 
 # Create device nodes in /dev.
@@ -534,6 +539,9 @@ mkdir -p $targetRoot
 
 exec 3< @fsInfo@
 
+echo "early pre udev:"
+#/bin/sh
+
 while read -u 3 mountPoint; do
     read -u 3 device
     read -u 3 fsType
@@ -608,6 +616,8 @@ exec 3>&-
 
 @postMountCommands@
 
+echo "post mount, pre udev shell:"
+#/bin/sh 
 
 # Emit a udev rule for /dev/root to prevent systemd from complaining.
 if [ -e /mnt-root/iso ]; then
@@ -670,6 +680,10 @@ mount --move /sys $targetRoot/sys
 mount --move /dev $targetRoot/dev
 mount --move /run $targetRoot/run
 
+echo shell  command before :
+echo exec env -i $(type -P switch_root) "$targetRoot" "$stage2Init"
+echo would be run: 
+#/bin/sh 
 exec env -i $(type -P switch_root) "$targetRoot" "$stage2Init"
 
 fail # should never be reached

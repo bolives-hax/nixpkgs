@@ -20,7 +20,6 @@ if [ "${IN_NIXOS_SYSTEMD_STAGE1:-}" != true ]; then
     # Print a greeting.
     echo
     echo -e "\e[1;32m<<< @distroName@ Stage 2 >>>\e[0m"
-    echo
 
 
     # Normally, stage 1 mounts the root filesystem read/writable.
@@ -142,6 +141,7 @@ if [ "${IN_NIXOS_SYSTEMD_STAGE1:-}" != true ]; then
 
 
     # Start systemd in a clean environment.
-    echo "starting systemd..."
+    echo "starting systemd...(trying to drop shell b4)"
+    #@shell@
     exec @systemdExecutable@ "$@"
 fi

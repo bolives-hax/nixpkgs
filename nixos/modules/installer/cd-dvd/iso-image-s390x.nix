@@ -17,21 +17,34 @@
     boot.initrd.kernelModules = [ "loop" "overlay" ];
     boot.kernel.features = { debug = true; };
 /*
- boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxManualConfig rec {
+ boot.kernelPackages = pkgs.linuxPackages_custom  { #pkgs.linuxPackagesFor ( pkgs.linuxManualConfig rec {
     version = "6.6.52";
+    modDirVersion = "6.6.52";
     src = fetchTarball {
       url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.52.tar.xz";
       sha256 = "sha256:0h92b741c602ff7i6hyndpjn8n1k06qa2pqprncd2ax9zn0k2d86";
     };
-    configfile = "${(pkgs.fetchurl {
-	url = "https://git.alpinelinux.org/aports/plain/main/linux-lts/lts.s390x.config";
-	hash = "sha256-U2iX8ZjNIE3c0s9VfKPxFVQQHGMus/cSg/MaWCXEYDQ=";
-    })}";
+    configfile = (pkgs.fetchgit {
+	url = "https://github.com/bolives-hax/alpine-kernel-nix-port";
+	rev = "d90c06a17cecda6baed933a28c72d75dc2d0f731";
+	hash = "sha256-yB3c0mtktJ7+qwuXCBCRtxSkdK/T61yr/ll/lMPY4WE=";
+    }).outPath + "/config";
+    #stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
+    #allowImportFromDerivation = false;
+  }; #);
+ system.requiredKernelConfig = lib.mkForce [];
 */
-    stdenv = pkgs.gcc10Stdenv;  # doesn't seem to set the GCC used for compilation
-  });
-# system.requiredKernelConfig = lib.mkForce [];
+
+/* VVV not used */ 
     boot.kernelPackages = pkgs.linuxPackagesFor ( pkgs.linuxPackages_latest.kernel.override {
+argsOverride = rec {
+    version = "6.6.52";
+    modDirVersion = "6.6.52";
+    src = fetchTarball {
+      url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.52.tar.xz";
+      sha256 = "sha256:0h92b741c602ff7i6hyndpjn8n1k06qa2pqprncd2ax9zn0k2d86";
+    };
+};
 	structuredExtraConfig = with lib.kernel; {
 		EARLY_PRINTK = yes;
 		CRASH_DUMP = lib.mkForce yes;
@@ -49,6 +62,7 @@
 		#SCLP_OFB = yes;
 	};
     });
+/**/
 
     fileSystems = {
     "/iso" = 
