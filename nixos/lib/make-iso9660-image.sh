@@ -36,10 +36,17 @@ if test -n "$bootable"; then
         fi
     done
 
-    isoBootFlags="-eltorito-boot ${bootImage}
-                  -eltorito-catalog .boot.cat
-                  -no-emul-boot -boot-load-size 4 -boot-info-table
-                  --sort-weight 1 /isolinux" # Make sure isolinux is near the beginning of the ISO
+    if test -n "$s390Bootable"; then
+	    isoBootFlags="-eltorito-boot ${bootImage}
+			  -eltorito-catalog .boot.cat
+			  -no-emul-boot"
+    else
+	    isoBootFlags="-eltorito-boot ${bootImage}
+			  -eltorito-catalog .boot.cat
+			  -eltorito-catalog .boot.cat
+			  -no-emul-boot -boot-load-size 4 -boot-info-table
+		           --sort-weight 1 /isolinux" # Make sure isolinux is near the beginning of the ISO
+    fi
 fi
 
 if test -n "$usbBootable"; then

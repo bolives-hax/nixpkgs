@@ -73,6 +73,7 @@ stdenv.mkDerivation {
 
   inherit isoName bootable bootImage compressImage volumeID efiBootImage efiBootable isohybridMbrImage usbBootable;
 
+  s390Bootable = stdenv.hostPlatform.isS390 || stdenv.hostPlatform.isS390x;
   sources = map (x: x.source) contents;
   targets = map (x: x.target) contents;
 
