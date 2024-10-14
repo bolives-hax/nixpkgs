@@ -23,6 +23,7 @@ stdenv.mkDerivation {
   name = "${fileName}${lib.optionalString (!hydraBuildProduct) ".img"}";
   __structuredAttrs = true;
 
+  # for some reason squashfsTools/bin/mksquashfs dose not make it to the buildCommand below
   nativeBuildInputs = [ squashfsTools ];
 
   buildCommand =
@@ -48,6 +49,7 @@ stdenv.mkDerivation {
     '' + ''
 
       # Generate the squashfs image.
+      PATH=$PATH:${squashfsTools}/bin/
       mksquashfs nix-path-registration $(cat $closureInfo/store-paths) $imgPath ${pseudoFilesArgs} \
         -no-hardlinks ${lib.optionalString noStrip "-no-strip"} -keep-as-directory -all-root -b 1048576 ${compFlag} \
         -processors $NIX_BUILD_CORES
