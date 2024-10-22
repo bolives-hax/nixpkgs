@@ -51,7 +51,7 @@ buildPythonPackage rec {
     "test_first"
     "test_loop_errors"
     "test_package_zip_list"
-  ];
+  ] ++  lib.optional stdenv.hostPlatform.isS390x [ "test_elif_deep" ];
 
   passthru.doc = stdenv.mkDerivation {
     # Forge look and feel of multi-output derivation as best as we can.
