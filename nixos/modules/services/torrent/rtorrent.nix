@@ -133,9 +133,11 @@ in
 
       # Tracker-less torrent and UDP tracker support
       # (conservative settings for 'private' trackers, change for 'public')
-      dht.mode.set = disable
-      protocol.pex.set = no
-      trackers.use_udp.set = no
+      # dht.mode.set = disable
+      dht.mode.set = auto
+      # protocol.pex.set = no
+      protocol.pex.set =yes
+      trackers.use_udp.set =yes
 
       # Peer settings
       throttle.max_uploads.set = 100
