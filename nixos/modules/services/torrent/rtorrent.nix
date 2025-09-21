@@ -152,9 +152,9 @@ in
       # Limits for file handle resources, this is optimized for
       # an `ulimit` of 1024 (a common default). You MUST leave
       # a ceiling of handles reserved for rTorrent's internal needs!
-      network.http.max_open.set = 50
-      network.max_open_files.set = 600
-      network.max_open_sockets.set = 3000
+      network.http.max_open.set = 150
+      network.max_open_files.set = 6000
+      network.max_open_sockets.set = 30000
 
       # Memory resource usage (increase if you have a large number of items loaded,
       # and/or the available resources to spend)
