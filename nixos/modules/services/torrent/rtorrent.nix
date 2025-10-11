@@ -193,6 +193,9 @@ in
       scgi_local = (cfg.rpcsock)
       schedule = scgi_group,0,0,"execute.nothrow=chown,\":${cfg.group}\",(cfg.rpcsock)"
       schedule = scgi_permission,0,0,"execute.nothrow=chmod,\"g+w,o=\",(cfg.rpcsock)"
+
+      network.bind_address.set = "0.0.0.0"
+      dht.port.set = 5009
     '';
 
     systemd = {
