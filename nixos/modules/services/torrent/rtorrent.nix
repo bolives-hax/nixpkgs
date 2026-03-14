@@ -141,27 +141,28 @@ in
 
       # Peer settings
       throttle.max_uploads.set = 100
-      throttle.max_uploads.global.set = 250
+      throttle.max_uploads.global.set = 300
 
-      throttle.min_peers.normal.set = 20
-      throttle.max_peers.normal.set = 60
-      throttle.min_peers.seed.set = 30
-      throttle.max_peers.seed.set = 80
-      trackers.numwant.set = 80
+      throttle.min_peers.normal.set = 1
+      throttle.max_peers.normal.set = 50
+      throttle.min_peers.seed.set = 1
+      throttle.max_peers.seed.set = 50
+      trackers.numwant.set = 100
 
       protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
 
       # Limits for file handle resources, this is optimized for
       # an `ulimit` of 1024 (a common default). You MUST leave
       # a ceiling of handles reserved for rTorrent's internal needs!
-      network.http.max_open.set = 150
-      network.max_open_files.set = 6000
-      network.max_open_sockets.set = 30000
+      network.http.max_open.set = 512
+      network.max_open_files.set = 32768
+
+      network.max_open_sockets.set = 16384
 
       # Memory resource usage (increase if you have a large number of items loaded,
       # and/or the available resources to spend)
-      pieces.memory.max.set = 1800M
-      network.xmlrpc.size_limit.set = 4M
+      pieces.memory.max.set = 5120M
+      network.xmlrpc.size_limit.set = 16M
 
       # Basic operational settings (no need to change these)
       session.path.set = (cat, (cfg.basedir), "session/")
@@ -174,10 +175,9 @@ in
       encoding.add = utf8
       system.umask.set = 0027
       system.cwd.set = (cfg.basedir)
-      network.http.dns_cache_timeout.set = 25
+      network.http.dns_cache_timeout.set = 600
       schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
-      schedule_remove = session_save
-      schedule2 = session_save , 10 , 86400, ((session.save))
+      schedule2 = session_save , 200 , 86400, ((session.save))
 
       # Watch directories (add more as you like, but use unique schedule names)
       #schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
@@ -198,6 +198,20 @@ in
 
       # network.bind_address.set = "0.0.0.0"
       dht.port.set = 5009
+
+      # added: unlimited global rates for 1Gbps connection
+      throttle.global_down.max_rate.set_kb = 0
+      throttle.global_up.max_rate.set_kb = 0
+
+      # added: bigger TCP buffers for 1Gbps throughput
+      network.send_buffer.size.set = 4M
+      network.receive_buffer.size.set = 4M
+
+      # added: skip hash check on completion — massive I/O savings on HDD
+      pieces.hash.on_completion.set = no
+
+      # added: disable preallocation — ZFS COW makes it wasteful
+      system.file.allocate.set = 0
     '';
 
     systemd = {
