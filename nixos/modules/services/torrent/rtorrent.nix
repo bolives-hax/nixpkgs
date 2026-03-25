@@ -211,7 +211,8 @@ in
       system.cwd.set = (cfg.basedir)
       network.http.dns_cache_timeout.set = 600
       schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
-      schedule2 = session_save , 200 , 86400, ((session.save))
+      # syntax: session_save , <seconds after start to issue first save> , <time in between subsequent saves>
+      schedule2 = session_save , 1200 , 1800, ((session.save))
 
       # Watch directories (add more as you like, but use unique schedule names)
       #schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
