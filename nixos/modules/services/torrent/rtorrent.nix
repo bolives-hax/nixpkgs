@@ -136,8 +136,8 @@ in
       # dht.mode.set = disable
       dht.mode.set = auto
       # protocol.pex.set = no
-      protocol.pex.set =yes
-      trackers.use_udp.set =yes
+      protocol.pex.set = yes
+      trackers.use_udp.set = yes
 
       # Peer settings
       throttle.max_uploads.set = 100
@@ -197,7 +197,7 @@ in
       schedule = scgi_permission,0,0,"execute.nothrow=chmod,\"g+w,o=\",(cfg.rpcsock)"
 
       # network.bind_address.set = "0.0.0.0"
-      dht.port.set = 5009
+      # dht.port.set = 5009
 
       # added: unlimited global rates for 1Gbps connection
       throttle.global_down.max_rate.set_kb = 0
