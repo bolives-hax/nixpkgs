@@ -230,7 +230,7 @@ in
       schedule = scgi_group,0,0,"execute.nothrow=chown,\"torrentdata\",(cfg.rpcsock)"
       schedule = scgi_permission,0,0,"execute.nothrow=chmod,\"g+w,o=\",(cfg.rpcsock)"
 
-      ${lib.optionalString dhtEnabled "dht.port.set = ${toSString cfg.dht.port}"}
+      ${lib.optionalString dhtEnabled "dht.port.set = ${toString cfg.dht.port}"}
       dht.mode.set = ${cfg.dht.mode}
 
       # added: unlimited global rates for 1Gbps connection
