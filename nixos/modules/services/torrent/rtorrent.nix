@@ -126,7 +126,9 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = let
+    dhtEnabled = cfg.dht.mode != "off";
+  in mkIf cfg.enable {
 
     users.groups = mkIf (cfg.group == "rtorrent") {
       rtorrent = { };
@@ -145,9 +147,7 @@ in
     networking.firewall.allowedTCPPorts = mkIf (cfg.openFirewall) [ cfg.port ]
       ++ lib.lists.optional dhtEnabled cfg.dht.port;
 
-    services.rtorrent.configText = let
-        dhtEnabled = cfg.dht.mode != "off";
-      in mkBefore ''
+    services.rtorrent.configText = mkBefore ''
       # Instance layout (base paths)
       method.insert = cfg.basedir, private|const|string, (cat,"${cfg.dataDir}/")
       method.insert = cfg.watch,   private|const|string, (cat,(cfg.basedir),"watch/")
