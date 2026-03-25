@@ -212,7 +212,7 @@ in
       network.http.dns_cache_timeout.set = 600
       schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
       # syntax: session_save , <seconds after start to issue first save> , <time in between subsequent saves>
-      schedule2 = session_save , 1200 , 3600, ((session.save))
+      schedule2 = session_save , 5400 , 28800, ((session.save))
 
       # Watch directories (add more as you like, but use unique schedule names)
       #schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
