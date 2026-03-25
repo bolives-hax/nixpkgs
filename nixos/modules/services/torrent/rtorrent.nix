@@ -72,6 +72,34 @@ in
       '';
     };
 
+    dht = {
+      port = mkOption {
+        type = types.port;
+          description = ''
+            The port on which the service will listen for DHT (Distributed Hash Table)
+            peer exchanges. Set this to the UDP port used for discovering and connecting
+            to other peers. Ensure the port is open in your firewall if you want
+            external peers to connect.
+          '';
+          default = 6881;
+      };
+      mode = mkOption {
+        ## May be set to `disable` (completely disable DHT), `off` (do not start DHT), `auto` (start and stop DHT as needed), or `on` (start DHT immediately).
+        type = lib.types.enum [ "disable" "off" "auto" "on" ];
+        description = ''
+          Controls the DHT behavior. Options are:
+          - `disable`: Completely disables DHT.
+          - `off`: Does not start DHT.
+          - `auto`: Starts and stops DHT as needed.
+          - `on`: Starts DHT immediately.
+
+          For more information, refer to the official rTorrent documentation:
+          https://github.com/rakshasa/rtorrent/wiki/Using-DHT
+        '';
+        default = "off";
+      };
+    };
+
     openFirewall = mkOption {
       type = types.bool;
       default = false;
@@ -114,9 +142,12 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = mkIf (cfg.openFirewall) [ cfg.port ];
+    networking.firewall.allowedTCPPorts = mkIf (cfg.openFirewall) [ cfg.port ]
+      ++ lib.lists.optional dhtEnabled cfg.dht.port;
 
-    services.rtorrent.configText = mkBefore ''
+    services.rtorrent.configText = let
+        dhtEnabled = cfg.dht.mode != "off";
+      in mkBefore ''
       # Instance layout (base paths)
       method.insert = cfg.basedir, private|const|string, (cat,"${cfg.dataDir}/")
       method.insert = cfg.watch,   private|const|string, (cat,(cfg.basedir),"watch/")
@@ -134,7 +165,10 @@ in
       # Tracker-less torrent and UDP tracker support
       # (conservative settings for 'private' trackers, change for 'public')
       # dht.mode.set = disable
-      dht.mode.set = auto
+      #
+      # <see at the end>
+      #
+      #dht.mode.set = auto
       # protocol.pex.set = no
       protocol.pex.set = yes
       trackers.use_udp.set = yes
@@ -196,8 +230,8 @@ in
       schedule = scgi_group,0,0,"execute.nothrow=chown,\"torrentdata\",(cfg.rpcsock)"
       schedule = scgi_permission,0,0,"execute.nothrow=chmod,\"g+w,o=\",(cfg.rpcsock)"
 
-      # network.bind_address.set = "0.0.0.0"
-      # dht.port.set = 5009
+      ${lib.mkIf dhtEnabled "dht.port.set = ${cfg.dht.port}"}
+      dht.mode.set = ${cfg.dht.mode}
 
       # added: unlimited global rates for 1Gbps connection
       throttle.global_down.max_rate.set_kb = 0
